@@ -1,0 +1,78 @@
+
+<br>
+<div class="text-center bg-light text-dark" style="padding-right: 180px;">
+    <h3>Here some information for you         </h3>
+</div>
+<hr>
+<br>
+
+  <div class="tetext-center bg-light text-dark">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5>You already written in this books</h5></br></br>
+            </div>
+            <div class="col-sm-6">
+                <h5>Date of Births of your Friends</h5>
+            </div>
+            <div class="col-sm-6" id="users">
+
+            </div>
+            <div class="col-sm-6" id="dob">
+
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ****Retrive data and display****//
+var user = firebase.auth().currentUser;
+var dbUsers = firebase.database().ref().child("Slams").orderByChild("pukey").equalTo(user.uid);
+
+dbUsers.on("value", function(users)
+{
+    if(users.exists())
+    {
+        var slamsHtml = "";
+        users.forEach(function(singleUser)
+        {
+            
+
+                slamsHtml += "<center><div class='row' class='>";
+                    slamsHtml += "<div class='col-sm-12'> <p style='text-align: center; color:black' >"
+                        + "Regd no: " + singleUser.val().fregdno;
+                        slamsHtml += "</p> </div></br>" ;
+        });
+        $("#users").html(slamsHtml);
+    }
+});
+var user = firebase.auth().currentUser;
+var dbUsers = firebase.database().ref().child("Users").orderByChild("regdno");
+      
+
+dbUsers.on("value", function(users)
+{
+    if(users.exists())
+    {
+        var slamsHtml = "";
+        users.forEach(function(singleUser)
+        {
+            
+            slamsHtml += "<div class='row'>";
+                    slamsHtml += "<div class='col-sm-6'> <p style='color:black;'>"
+                     + singleUser.val().regdno + "-->"
+                        + "</p> </div>" +
+
+                        "<div class='col-sm-6'> <p style='color: black;'>"
+                         + singleUser.val().dob
+                        + "</p> </div>";
+                        
+                       
+                slamsHtml += "</div";
+
+                
+        });
+        $("#dob").html(slamsHtml);
+    }
+});
+
+</script>

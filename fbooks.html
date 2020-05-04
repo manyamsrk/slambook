@@ -1,0 +1,321 @@
+
+       <!-- The Modal -->
+        <div class="modal" id="myModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="container">           
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h4 class="modal-title">Book belongs to: <span id="fRegdno"></span><div id="fukey">
+                          <script>
+                            $("#fukey").hide();
+                          </script>
+                        </div></h4>
+                      </div>
+                      <!-- Modal body -->
+                      <div class="modal-body">
+                       <form class="" id="main-form">
+                         <p>Your Snap</p>
+                        <div class="form-group">
+                          <input type="file" class="form-control" id="profile-image"/>
+                          <div class="invalid-feedback">
+                              Please choose a valid picture
+                          </div>
+                        </div>
+                        <div class="form-group">
+                         <img id="selected-profile-image" width="80" height="80" src="#"/>             
+                        </div>
+                        <div class="form-group">
+                          <div class="progress bg-secondary">
+                            <div class="progress-bar bg-success" id="upload-progress-profile" style="width: 0%;">
+                              0%
+                            </div>
+                          </div>
+                        </div>
+                          <div class="form-group">
+                              <label for="firstName">First Name</label>
+                              <input type="text" class="form-control" id="firstName" placeholder="Enter first Name">    
+                          </div>
+                          <div class="form-group">
+                          <label for="secondName">Second Name</label>
+                          <input type="text" class="form-control" id="secondName" placeholder="Enter Second Name">
+                           </div>
+                           <div class="form-group">
+                            <label for="pno">Ring me at</label>
+                            <input type="number" class="form-control" id="pno" placeholder="Enter Mobile number">    
+                        </div>
+                        <div class="form-group">
+                          <label for="dob">Birtday</label>
+                          <input type="date" class="form-control" id="dob" placeholder="DD/MM/YYYY">    
+                        </div>
+                        <div class="form-group">
+                          <label for="bfriend">Best Buddy</label>
+                          <input type="text" class="form-control" id="bfriend" placeholder="Best Friend">    
+                        </div>
+                        <div class="form-group">
+                          <label for="callme">You Like to Call Me as</label>
+                          <input type="text" class="form-control" id="callme" placeholder="You Like to Call Me as">    
+                        </div>
+                        <div class="form-group">
+                          <label for="dream">Biggest dream</label>
+                          <input type="text" class="form-control" id="dream" placeholder="Biggest dream">    
+                        </div>
+                        <div class="form-group">
+                          <label for="hmoment">Happiest moment</label>
+                          <input type="text" class="form-control" id="hmoment" placeholder="Happiest moment">    
+                        </div>
+                        <div class="form-group">
+                          <label for="favourite">Favourite things</label>
+                          <input type="text" class="form-control" id="favourite" placeholder="Favourite actor+sports+color">    
+                        </div>
+                          <div class="form-group">
+                            <label for="pemail">Email</label>
+                            <input type="email" class="form-control" id="pemail" placeholder="Mail">
+                           </div>
+                           <div class="form-group">
+                            <label for="efield">Your Wish</label>
+                            <textarea type="text" rows="2" placeholder="anything" class="form-control" id="efield">                             
+                            </textarea>
+                          </div>
+                          </br>
+                            <div class="form-group">
+                              <button id="save-slam" type="button" style="width: 150px; height: 60px;" class="btn btn-primary" onclick="disableBtn()">Send</button>
+                          </div>
+                          <script>
+                                  function disableBtn() {
+                                  document.getElementById("save-slam").disabled = true;
+                                  setTimeout(function(){document.getElementById("save-slam").disabled = false;},20000);
+                              }
+                              
+                            
+                          </script>
+                         
+                       </form>
+                       <div id="result">
+
+                      </div>
+                      </div>
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+              </div>
+        </div>  
+      </div>
+      <div class="text-center bg-light text-dark">
+        <h3>All Your Classmates Books</h3>
+      </div>
+      <hr>
+      <br>
+      <div class="row container-fluid bg-3">
+        <div class="col-sm-12" id="users">
+      
+        </div>
+      </div>
+      <script>
+        // ****Retrive data and display****//
+      var user = firebase.auth().currentUser;
+      var dbUsers = firebase.database().ref().child("Users").orderByChild("regdno");
+      
+      dbUsers.on("value", function(users)
+      {
+        if(users.exists())
+        {
+            var usersHtml = "";
+            users.forEach(function(singleUser)
+            {
+
+                    
+                    usersHtml += "<div class='row'>";
+                        usersHtml += "<div class='col-sm-5'> <p style='color:grey;'>"
+                            + "Name: " + singleUser.val().firstName + " " + singleUser.val().secondName
+                            + "</p> </div>" 
+                            ;
+                    usersHtml += "</div>";
+      
+                    usersHtml += "<div style='text-align: justify; color: black'>";
+                      + "Regd no:" +  singleUser.val().regdno;
+                    usersHtml += "</div>";
+      
+                    usersHtml += "<div class='form-group'style='text-align: justify; color: black'>";
+                        usersHtml += "<button class='form-control btn btn-light bg-dark text-white' data-toggle='modal' data-target='#myModal' onclick=getinfo('"+singleUser.key+"')>Open</button>";
+                    usersHtml += "</div><br>";
+                usersHtml += "</div>";
+            });
+            $("#users").html(usersHtml);
+        }
+      });
+      function getinfo(key)
+      {
+        var getRef = firebase.database().ref().child("Users").child(key);
+          getRef.once("value").then(function(snapshot)
+          {
+            var fRegdno = (snapshot.val() && snapshot.val().regdno);
+            var fukey = (snapshot.key);
+            document.getElementById("fRegdno").innerHTML = fRegdno;
+            document.getElementById("fukey").innerHTML = fukey;           
+          });
+      };
+
+      </script>
+<br>
+<!-- photo valiadation -->
+<script>
+    var validImagetypes = ["image/gif", "image/jpeg", "image/png"];
+    $("#selected-profile-image").hide(); 
+    function previewImage(image_blog)
+    {
+        if(image_blog.files && image_blog.files[0])
+        {
+        var reader = new FileReader();
+
+        reader.onload = function(e)
+         {
+             $("#selected-profile-image").attr('src', e.target.result);
+             $("#selected-profile-image").fadeIn();
+         }
+         reader.readAsDataURL(image_blog.files[0]);
+        }
+    }
+    $("#profile-image").change(function()
+    {
+        previewImage(this);
+    });
+    $("#save-slam").click(function()
+    {
+        $("#profile-image").removeClass("is-invalid");
+
+        var picture = $("#profile-image").prop("files")[0];
+        var FirstName = $("#firstName").val();
+        var SecondName = $("#secondName").val();
+        var FRegdno = document.getElementById("fRegdno").innerHTML;
+        var Fukey = document.getElementById("fukey").innerHTML;
+        var pemail = $("#pemail").val();
+        var addf = $("#efield").val();
+        var pno = $("#pno").val();
+        var dob = $("#dob").val();
+        var bfriend = $("#bfriend").val();
+        var callme = $("#callme").val();
+        var dream = $("#dream").val();
+        var hmoment = $("#hmoment").val();
+        var favourite = $("#favourite").val();
+
+        if(picture == null)
+        {
+            $("#profile-image").addClass("is-invalid");
+            return;
+        }
+        if($.inArray(picture["type"], validImagetypes)<0)
+        {
+            $("#profile-image").addClass("is-invalid");
+            return;
+        }
+
+         // ************save to firebase**************//
+        var databaseRef = firebase.database().ref().child("Slams");
+        
+        databaseRef.once("value").then(function(snapshot)
+        {
+        var name = picture["name"];
+        var dateStr = new Date().getTime();
+        var fileCompleteName = name + "_" + dateStr;
+        var storageRef = firebase.storage().ref("Profile Images");
+        var blogStorageRef = storageRef.child(fileCompleteName);
+        var uploadTask = blogStorageRef.put(picture);
+
+        uploadTask.on("state_changed",
+            function progress(snapshot)
+            {
+                var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                $("#upload-progress-profile").html(Math.round(percentage) + "%");
+                $("#upload-progress-profile").attr("style", "width:" + percentage + "%");
+            },
+            function error(err)
+            {
+            },
+            function complete()
+                {
+                    var user =firebase.auth().currentUser;
+                    var userName;
+                    var PRegdno;
+                    var Pukey;
+                    
+                    firebase.database().ref('Users/' + user.uid).once('value').then(function(snapshot)
+                    {
+                        var fName = (snapshot.val() && snapshot.val().firstName);
+                        var sName = (snapshot.val() && snapshot.val().secondName);
+                        var pRegdno = (snapshot.val() && snapshot.val().regdno);
+                        var pukey = (snapshot.val() && snapshot.key);
+                        PRegdno = pRegdno;
+                        Pukey = pukey;
+                        userName = fName + " " + sName;
+                    });
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadUrl)
+                    {
+                        var time = new Date();
+                        var options = 
+                        {
+                            weekday: "long", 
+                            month: "long",
+                            day: "2-digit",
+                            year: "numeric",
+
+                        };
+                        
+                        var slamData = 
+                        {
+                            "pimage": downloadUrl,
+                            "name": fileCompleteName,
+                            "firstName": FirstName,
+                            "secondName": SecondName,
+                            "pemail": pemail,
+                            "pukey": Pukey,
+                            "pregdno": PRegdno,
+                            "fukey": Fukey,
+                            "fregdno" : FRegdno,
+                            "userName": userName,
+                            "addf" : addf,
+                            "pno": pno,
+                            "dob": dob,
+                            "bfriend": bfriend,
+                            "callme": callme,
+                            "dream": dream,
+                            "hmoment": hmoment,
+                            "favourite": favourite,
+                            "time": time.toLocaleString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true}),
+                            "date": time.toLocaleDateString('en-US', options),                                      
+                        };
+                    var newPostRef = databaseRef.push();
+                    newPostRef.set(slamData, function(err)
+                    {
+                        if(err)
+                        {
+                            $("#result").attr("class", "alert alert-danger");
+                            $("#result").html(err.message);
+                        }
+                        else
+                        {
+                            $("#result").attr("class", "alert alert-success");
+                            $("#result").html("Page has saved successfully");
+
+                            window.open("", "_self");
+                        }
+                    });
+                });                              
+            }
+        );
+    });
+});
+
+function resetForm()
+{
+    $("#main-form")[0].reset();
+    $("#selected-profile-image").fadeOut();
+    $("#upload-progress").html("Completed");
+}
+
+</script>
+
+ </script>
+

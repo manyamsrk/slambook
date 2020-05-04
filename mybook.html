@@ -1,0 +1,140 @@
+<div class="text-center bg-light text-dark">
+    <h3>Your Book</h3>
+<br>
+<div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="container">     
+          
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <!-- <h5 class="modal-title" id="myModal"></h5> -->
+                </div>
+                <div class="modal-body" id="main-form">
+                  
+                      <div>
+                        <img width="160" height="160" id="pimage" src="" />
+                      </div>
+                    </br>
+                    <hr>
+                       <div>
+                           <h4 style="text-align: left;">Name: <span id="firstName"></span> <span id="secondName"></span></h4>
+                       </div>  
+                      <hr>
+                       <div>
+                        <h4 style="text-align: left;">Ring me at: <span id="pno"></span></h4>
+                       </div> 
+                       <hr>
+                      <div>
+                        <h4 style="text-align: left;">  Birthday: <span id="dob"></span></h4>
+                      </div> 
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;"> Best Buddy: <span id="bfriend"></span></h4>
+                      </div>
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;"> You Like to Call Me as: <span id="callme"></span></h4>
+                      </div>
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;">Biggest dream: <span id="dream"></span></h4>
+                      </div>
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;">Happiest moment: <span id="hmoment"></span></h4>
+                      </div>
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;">Favourite things: <span id="favourite"></span></h4>
+                      </div>
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;"> Email: <span id="pemail"></span></h4>
+                      </div>
+                      <hr>
+                      <div>
+                        <h4 style="text-align: left;">Some extra info: <span id="efield"></span></h4>
+                    </div>
+                  </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+              </div>
+            </div>
+          </div>  
+        </div>
+        </div>
+<br>
+<hr>
+<br>
+
+  <div class="tetext-center bg-light text-dark">
+    <center>
+    <div class="col-sm-12" id="users">
+
+    </div>
+    </div>
+
+<script>
+    // ****Retrive data and display****//
+    var user = firebase.auth().currentUser;
+    var dbSlams = firebase.database().ref().child("Slams").orderByChild("fukey").equalTo(user.uid);
+
+    dbSlams.on("value", function(users)
+    {
+    if(users.exists())
+    {
+        var slamsHtml = "";
+        users.forEach(function(singleSlam)
+        {
+            //counter = counter + 1;
+
+
+                slamsHtml += "<div class='form-group'style='text-align: justify; color: black'>";
+                    slamsHtml += "<button class='form-control btn btn-primary text-red' data-toggle='modal' data-target='#myModal' onclick=getinfo('"+singleSlam.key+"')>"
+                        slamsHtml += "<div style='text-align: center; color: black'>";
+                        slamsHtml += singleSlam.val().pregdno;
+                        slamsHtml += "</div><br>";
+                slamsHtml += "</div>";
+        });
+        $("#users").html(slamsHtml);
+    }
+});
+
+function getinfo(key)
+      {
+        var getRef = firebase.database().ref().child("Slams").child(key);
+          getRef.once("value").then(function(snapshot)
+          {
+            var firstname = (snapshot.val() && snapshot.val().firstName);
+            var secondname = (snapshot.val() && snapshot.val().secondName);
+            var pimage = (snapshot.val() && snapshot.val().pimage);
+            var pemail = (snapshot.val() && snapshot.val().pemail);
+            var pno = (snapshot.val() && snapshot.val().pno);
+            var dob = (snapshot.val() && snapshot.val().dob);
+            var bfriend = (snapshot.val() && snapshot.val().bfriend);
+            var callme = (snapshot.val() && snapshot.val().callme);
+            var dream = (snapshot.val() && snapshot.val().dream);
+            var hmoment = (snapshot.val() && snapshot.val().hmoment);
+            var favourite = (snapshot.val() && snapshot.val().favourite);
+            var efield = (snapshot.val() && snapshot.val().addf);
+          
+            document.getElementById("firstName").innerHTML = firstname;
+            document.getElementById("secondName").innerHTML = secondname; 
+            document.getElementById("pimage").src = pimage;
+            document.getElementById("pemail").innerHTML = pemail;
+            document.getElementById("pno").innerHTML = pno;
+            document.getElementById("dob").innerHTML = dob;
+            document.getElementById("bfriend").innerHTML = bfriend;
+            document.getElementById("callme").innerHTML = callme;
+            document.getElementById("dream").innerHTML = dream;
+            document.getElementById("hmoment").innerHTML = hmoment;
+            document.getElementById("favourite").innerHTML = favourite;
+            document.getElementById("efield").innerHTML = efield;
+          });
+      };
+
+</script>
+
